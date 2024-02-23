@@ -88,6 +88,20 @@
         <pre>{{ resultat_scan.scan_result }}</pre>
     </section>
 
+   <section>
+       <h2>Actions</h2>
+       <form action="/scan" method="post">
+           <button type="submit">Lancer un nouveau scan</button>
+       </form>
+    </section>
+
+    {% if scan_success %}
+    <section>
+        <h2>Résultats du dernier scan</h2>
+        <p>Le nouveau scan a été lancé avec succès.</p>
+    </section>
+    {% endif %}
+
 </div>
 
 </body>

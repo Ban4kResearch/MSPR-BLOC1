@@ -3,11 +3,28 @@ import nmap
 import platform
 import subprocess
 import requests
+import os 
 
-from flask import Flask, render_template
-from markupsafe import Markup
+from flask import Flask, render_template, redirect, url_for
 
 app = Flask(__name__,template_folder='templates')
+
+def check_and_update_repository():
+    desktop_path = "/root/hakan/"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
+    repository_path = os.path.join(desktop_path, "MSPR-BLOC1")
+
+    # Vérifier si le répertoire existe
+    if not os.path.exists(repository_path):
+        # Si le répertoire n'existe pas, effectuer un git clone
+        clone_command = ["git", "clone", "https://github.com/NChansard/MSPR-BLOC1.git", repository_path]
+        subprocess.run(clone_command, check=True)
+
+    # Entrer dans le répertoire
+    os.chdir(repository_path)
+
+    # Effectuer un git pull pour mettre à jour le répertoire
+    pull_command = ["git", "pull"]
+    subprocess.run(pull_command, check=True)
 
 def collecter_informations_locales():
     local_ip = subprocess.getoutput('hostname -I').split()[0]
@@ -45,6 +62,7 @@ def main():
 
 @app.route('/')
 def tableau_de_bord():
+    check_and_update_repository()
     local_ip, hostname = collecter_informations_locales()
     resultat_scan = scanner_reseau()
     machines_connectees = len(resultat_scan['hosts'])
@@ -62,17 +80,33 @@ def read_github_readme(repo_url):
         # Construire l'URL du fichier README en format RAW
         readme_url = f"https://raw.githubusercontent.com/NChansard/MSPR-BLOC1/main/version.md"
         response = requests.get(readme_url)
-        print(response)
 
         if response.status_code == 200:
             # Afficher le contenu du README
             version = response.text
-            print(response.text)
         else:
             print(f"Erreur lors de la requête. Code de statut : {response.status_code}")
 
     except requests.RequestException as e:
         print(f"Erreur lors de la requête : {e}")
     return version
+
+@app.route('/scan', methods=['POST'])
+def relancer_scan():
+    try:
+        local_ip, hostname = collecter_informations_locales()
+        resultat_scan = scanner_reseau()
+        machines_connectees = len(resultat_scan['hosts'])
+        ping_result = subprocess.getoutput('ping -c 5 google.com')
+        repository_url = "https://github.com/NChansard/MSPR-BLOC1"
+        version = read_github_readme(repository_url)
+
+        return render_template('dashboard.html', local_ip=local_ip, hostname=hostname,
+                               machines_connectees=machines_connectees, resultat_scan=resultat_scan,
+                               ping_result=ping_result, version=version, scan_success=True)
+    except Exception as e:
+        return render_template('dashboard.html', error=str(e))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
+
