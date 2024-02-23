@@ -2,8 +2,10 @@ import json
 import nmap
 import platform
 import subprocess
+import requests
 
 from flask import Flask, render_template
+from markupsafe import Markup
 
 app = Flask(__name__,template_folder='templates')
 
@@ -47,9 +49,30 @@ def tableau_de_bord():
     resultat_scan = scanner_reseau()
     machines_connectees = len(resultat_scan['hosts'])
     ping_result = subprocess.getoutput('ping -c 5 google.com')
+    repository_url = "https://github.com/NChansard/MSPR-BLOC1"
+    version = read_github_readme(repository_url)
 
     return render_template('dashboard.html', local_ip=local_ip, hostname=hostname,
                            machines_connectees=machines_connectees, resultat_scan=resultat_scan,
-                           ping_result=ping_result)
+                           ping_result=ping_result, version=version)
+
+def read_github_readme(repo_url):
+    version = None
+    try:
+        # Construire l'URL du fichier README en format RAW
+        readme_url = f"https://raw.githubusercontent.com/NChansard/MSPR-BLOC1/main/version.md"
+        response = requests.get(readme_url)
+        print(response)
+
+        if response.status_code == 200:
+            # Afficher le contenu du README
+            version = response.text
+            print(response.text)
+        else:
+            print(f"Erreur lors de la requête. Code de statut : {response.status_code}")
+
+    except requests.RequestException as e:
+        print(f"Erreur lors de la requête : {e}")
+    return version
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
