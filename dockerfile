@@ -8,15 +8,15 @@ RUN apt-get update && apt-get install -y nmap iputils-ping
 
 # Copier les fichiers nécessaires dans le conteneur
 COPY requirements.txt /app/
-COPY test.py /app/
+COPY script.py /app/
 COPY templates /app/templates
 
 # Installer les dépendances
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-ENV FLASK_APP test.py
+ENV FLASK_APP script.py
 # Exposer le port sur lequel Flask s'exécute
 EXPOSE 5000-5005
 
 # Commande pour exécuter l'application Flask
-CMD ["python", "test.py"]
+CMD ["python", "script.py"]

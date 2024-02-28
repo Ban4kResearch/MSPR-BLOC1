@@ -1,7 +1,7 @@
 import unittest
-from unittest.mock import patch
-import sys 
-sys.path.append('./')  # Assuming 'scripts.py' is in the same directory as the test script
+from unittest.mock import patch, call, ANY
+import sys
+sys.path.append('./')
 
 from script import collecter_informations_locales, scanner_reseau, read_github_readme, check_and_update_repository
 
@@ -35,11 +35,16 @@ class TestScripts(unittest.TestCase):
         self.assertEqual(version, 'Test version content')
 
     @patch('subprocess.run')
-    @patch('os.path.exists', return_value=False)
+    @patch('os.path.exists')
     @patch('os.chdir')
     def test_check_and_update_repository(self, mock_chdir, mock_exists, mock_run):
+        mock_exists.side_effect = [False, True]  # Simule un dépôt inexistant, puis existant
         check_and_update_repository()
-        mock_run.assert_called_with(['git', 'clone', 'https://github.com/NChansard/MSPR-BLOC1.git', '/root/hakan/MSPR-BLOC1'])
+        expected_calls = [
+            call(['git', 'clone', 'https://github.com/NChansard/MSPR-BLOC1.git', ANY], check=True),
+            call(['git', 'pull'], check=True)
+        ]
+        mock_run.assert_has_calls(expected_calls)
 
 if __name__ == '__main__':
     unittest.main()
