@@ -20,8 +20,8 @@ def check_server_status(url):
 
 @app.route('/get-status', methods=['GET'])
 def get_status():
-    url1 = "http://92.171.63.254:5001"
-    url2 = "http://92.171.63.254:5000"
+    url1 = "http://192.168.1.133:9998"
+    url2 = "http://192.168.1.133:5000"
 
     status1 = check_server_status(url1)
     status2 = check_server_status(url2)

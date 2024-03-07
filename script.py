@@ -10,7 +10,7 @@ from flask import Flask, render_template, redirect, url_for
 app = Flask(__name__,template_folder='templates')
 
 def check_and_update_repository():
-    desktop_path = "/tmp/"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
+    desktop_path = "/Users/nathanaelchansard/Desktop/"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
     repository_path = os.path.join(desktop_path, "MSPR-BLOC1")
 
     # Vérifier si le répertoire existe
@@ -26,6 +26,20 @@ def check_and_update_repository():
     pull_command = ["git", "pull"]
     subprocess.run(pull_command, check=True)
 
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    local_ip = subprocess.getoutput('hostname -I').split()[0]
+    scan_file = f'{local_ip}.json'
+    if not os.path.exists(scan_file):
+        return 'Scan file not found'
+    with open(scan_file, 'rb') as f:
+        # Send the file to the web server
+        url = "http://192.168.1.133:9999/receive-file"
+        response = requests.post(url, files={'file': f})
+    if response.ok:
+        return 'File successfully sent'
+    else:
+        return f'Error sending file: {response.status_code}'
 
 def collecter_informations_locales():
     local_ip = subprocess.getoutput('hostname -I').split()[0]
@@ -33,6 +47,7 @@ def collecter_informations_locales():
     return local_ip, hostname
 
 def scanner_reseau():
+    local_ip = subprocess.getoutput('hostname -I').split()[0]
     nm = nmap.PortScanner()
     nm.scan(hosts='192.168.1.1/24', arguments='-p 22-80')
     
@@ -44,11 +59,11 @@ def scanner_reseau():
 
     result = {
         'hosts': nm.all_hosts(),
-        f'{host}': nm.csv(),
+        f'{local_ip}': nm.csv(),
         'open_ports': open_ports,
     }
 
-    with open(f'{host}.json', 'w') as json_file:
+    with open(f'{local_ip}.json', 'w') as json_file:
         json.dump(result, json_file)
 
     return result
@@ -110,4 +125,3 @@ def relancer_scan():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=9998,debug=True)
-
