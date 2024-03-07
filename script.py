@@ -10,7 +10,7 @@ from flask import Flask, render_template, redirect, url_for
 app = Flask(__name__,template_folder='templates')
 
 def check_and_update_repository():
-    desktop_path = "/root/hakan/"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
+    desktop_path = "/tmp/"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
     repository_path = os.path.join(desktop_path, "MSPR-BLOC1")
 
     # Vérifier si le répertoire existe
@@ -25,6 +25,7 @@ def check_and_update_repository():
     # Effectuer un git pull pour mettre à jour le répertoire
     pull_command = ["git", "pull"]
     subprocess.run(pull_command, check=True)
+
 
 def collecter_informations_locales():
     local_ip = subprocess.getoutput('hostname -I').split()[0]
@@ -43,11 +44,11 @@ def scanner_reseau():
 
     result = {
         'hosts': nm.all_hosts(),
-        'scan_result': nm.csv(),
+        f'{host}': nm.csv(),
         'open_ports': open_ports,
     }
 
-    with open('scan_result.json', 'w') as json_file:
+    with open(f'{host}.json', 'w') as json_file:
         json.dump(result, json_file)
 
     return result
@@ -108,5 +109,5 @@ def relancer_scan():
         return render_template('dashboard.html', error=str(e))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',debug=True)
+    app.run(host='0.0.0.0', port=9998,debug=True)
 

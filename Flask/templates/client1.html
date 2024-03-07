@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma première application Flask</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://raw.githubusercontent.com/WickyNilliams/tableify/master/tableify.js"></script>
+</head>
+<body>
+    <h1>Bienvenue sur ma page Flask !</h1>
+    <p>C'est une page HTML de base servie par Flask.</p>
+
+    <h2>Contenu du fichier JSON :</h2>
+
+    <pre id="json-content"></pre>
+
+   <script>
+        // Charger le fichier JSON en utilisant jQuery
+        $(document).ready(function() {
+            $.getJSON('/static/data.json', function(data) {
+                // Utiliser tableify pour convertir le JSON en tableaux HTML
+                var htmlTable = tableify(data, null, 2);
+                $('#json-content').html(htmlTable);
+            });
+        });
+    </script>
+</body>
+</html>
+

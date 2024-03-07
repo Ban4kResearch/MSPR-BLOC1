@@ -85,13 +85,36 @@
 
     <section>
         <h2>Résultats du Dernier Scan du Réseau</h2>
-        <pre>{{ resultat_scan.scan_result }}</pre>
+    <ul>
+        <li><strong>Adresse IP :</strong> {{ local_ip }}</li>
+        <li><strong>Machines Connectées :</strong>
+            <ul>
+            <br>
+                {% for host in resultat_scan.hosts %}
+                    <li>{{ host }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        <br>
+        <li><strong>Ports Ouverts :</strong>
+            <ul>
+            <br>
+                {% for host, port in resultat_scan.open_ports %}
+                    <li>{{ host }}:{{ port }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
     </section>
 
    <section>
        <h2>Actions</h2>
        <form action="/scan" method="post">
            <button type="submit">Lancer un nouveau scan</button>
+       </form>
+       <form action="{{ url_for('upload_file') }}" method="post">
+         <input type="hidden" name="file" value="scan_result.json">
+         <input type="submit" value="Envoyer Scan">
        </form>
     </section>
 
