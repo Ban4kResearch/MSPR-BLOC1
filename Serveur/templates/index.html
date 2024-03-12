@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mspr1</title>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css" media="screen" />
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         .status-logo {
@@ -31,25 +31,17 @@
             <div class="content content-1">
                 <div class="fab fa-facebook"></div>
                 <h2> Client 1</h2>
-                <a href="Client1.php">Voir plus </a>
+                <p>État du serveur Client 1 : <span id="status1">Loading...</span></p>
+                <a href="client1.html">Voir plus </a>
+                <span class="status-logo" id="status-logo1"></span>
             </div>
-
             <div class="content content-2">
                 <div class="fab fa-whatsapp"></div>
                 <h2>Client 2</h2>
-                <a href="http://92.171.63.254:5001/">Voir plus</a>
-                <span class="status-logo" id="status-logo1"></span>
-            </div>
-
-            <div class="content content-3">
-                <div class="fab fa-youtube"></div>
-                <h2>Client 3</h2>
-                <a href="#">Voir plus</a>
+                <p>État du serveur Client 2 : <span id="status2">Loading...</span></p>
+                <a href="client2.html">Voir plus</a>
                 <span class="status-logo" id="status-logo2"></span>
             </div>
-
-            <p>État du serveur Client 1 : <span id="status1">Loading...</span></p>
-            <p>État du serveur Client 2 : <span id="status2">Loading...</span></p>
         </div>
     </div>
 
@@ -76,7 +68,7 @@
             const logoElement = $('#' + logoId);
             logoElement.removeClass('status-logo-green status-logo-red');
 
-            if (status === 'accessible') {
+            if (status === 'Online') {
                 logoElement.addClass('status-logo-green');
             } else {
                 logoElement.addClass('status-logo-red');

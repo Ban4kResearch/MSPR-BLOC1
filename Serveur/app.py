@@ -20,8 +20,8 @@ def check_server_status(url):
 
 @app.route('/get-status', methods=['GET'])
 def get_status():
-    url1 = "http://92.171.63.254:5003"
-    url2 = "http://192.168.1.133:5000"
+    url1 = "http://92.171.63.254:5001/"
+    url2 = "http://92.171.63.254:5000/"
 
     status1 = check_server_status(url1)
     status2 = check_server_status(url2)
@@ -46,6 +46,14 @@ def receive_file():
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/client1.html')
+def client1():
+    return render_template('client1.html')
+
+@app.route('/client2.html')
+def client2():
+    return render_template('client2.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=9999)
