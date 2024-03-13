@@ -34,7 +34,7 @@ def upload_file():
         return 'Scan file not found'
     with open(scan_file, 'rb') as f:
         # Send the file to the web server
-        url = "http://192.168.1.133:9999/receive-file"
+        url = "http://89.89.145.248:9999/receive-file"
         response = requests.post(url, files={'file': f})
     if response.ok:
         return 'File successfully sent'
