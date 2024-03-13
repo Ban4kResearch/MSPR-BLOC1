@@ -67,12 +67,7 @@
     </div>
 
     <script>
-        const jsonFileName = '172.17.0.4.json'; // Remplacez par le nom du fichier .json
-
-        // Modifier le titre pour retirer ".json" à la fin de l'adresse IP locale
-        document.querySelector('h1').textContent += ` - Adresse IP Locale : ${jsonFileName.replace('.json', '')}`;
-
-        fetch(`/static/${jsonFileName}`)
+        fetch('/static/172.17.0.4.json')
             .then(response => response.json())
             .then(data => {
                 const rows = data[Object.keys(data)[1]].trim().split('\r\n');

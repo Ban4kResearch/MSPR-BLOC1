@@ -10,7 +10,7 @@ from flask import Flask, render_template, redirect, url_for
 app = Flask(__name__,template_folder='templates')
 
 def check_and_update_repository():
-    desktop_path = "/Users/nathanaelchansard/Desktop/"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
+    desktop_path = "/app"  # Remplacez cela par le chemin absolu de votre répertoire Desktop
     repository_path = os.path.join(desktop_path, "MSPR-BLOC1")
 
     # Vérifier si le répertoire existe
@@ -124,4 +124,4 @@ def relancer_scan():
         return render_template('dashboard.html', error=str(e))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9998,debug=True)
+    app.run(host='0.0.0.0',debug=True)
